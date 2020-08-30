@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+    id 'kotlin'
+    id 'com.github.dcendents.android-maven'
+}
+
+group = "com.github.Darkos-den"
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0"
+    implementation 'org.kodein.di:kodein-di-generic-jvm:6.5.5'
+    implementation 'org.kodein.di:kodein-di-framework-android-x:6.5.5'
+}

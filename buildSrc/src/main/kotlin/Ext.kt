@@ -31,5 +31,4 @@ fun Project.applyMultiPlatformSourceSets(){
 }
 
 fun applyVersions(){
-    Versions.kotlin = "1.3.72"
 }
