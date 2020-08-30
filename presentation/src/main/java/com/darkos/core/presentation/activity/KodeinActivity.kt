@@ -5,7 +5,6 @@ import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.darkos.core.presentation.common.importIfNotNull
-import com.darkos.core.presentation.viewModel.ViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinTrigger
@@ -25,7 +24,7 @@ abstract class KodeinActivity : AppCompatActivity(), KodeinAware {
     override val kodein: Kodein by retainedKodein {
         extend(_parentKodein)
 
-        bind<ViewModelProvider.Factory>() with singleton { ViewModelFactory(direct) }
+//        bind<ViewModelProvider.Factory>() with singleton { ViewModelFactory(direct) }
 
         importIfNotNull(kodeinModule)
         importIfNotNull(viewModelModule)
