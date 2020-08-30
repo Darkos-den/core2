@@ -102,7 +102,7 @@ internal class ActivityResultProcessor {
             requestCode = requestCode,
             handler = handler,
             getExtra = {
-                it.getParcelableExtra<T>(extraKey)
+                it.getParcelableExtra<T>(extraKey)!!
             },
             onCancel = onCancel
         ).let {
