@@ -22,7 +22,7 @@ inline fun <reified VM, T> T.viewModel(): Lazy<VM>
               VM : ViewModel,
               VM : BaseViewModel {
     return lazy {
-        ViewModelProvider(context as AppCompatActivity, direct.instance())
+        ViewModelProvider(context as AppCompatActivity, direct.instance(tag = "fragment"))
             .get(VM::class.java).let {
                 return@let it
             }
@@ -35,7 +35,7 @@ inline fun <reified VM, T> T.viewModel(): Lazy<VM>
               VM : ViewModel,
               VM : BaseViewModel {
     return lazy {
-        ViewModelProvider(this as AppCompatActivity, direct.instance())
+        ViewModelProvider(this as AppCompatActivity, direct.instance(tag = "activity"))
             .get(VM::class.java).let {
                 return@let it
             }
@@ -48,7 +48,7 @@ inline fun <reified VM, T> T.argumentedViewModel(): Lazy<VM>
               VM : ViewModel,
               VM : ArgumentedViewModel<*> {
     return lazy {
-        ViewModelProvider(context as AppCompatActivity, direct.instance())
+        ViewModelProvider(context as AppCompatActivity, direct.instance(tag = "fragment"))
             .get(VM::class.java).let {
                 return@let it
             }

@@ -25,7 +25,7 @@ abstract class KodeinActivity : AppCompatActivity(), KodeinAware {
     override val kodein: Kodein by retainedKodein {
         extend(_parentKodein)
 
-        bind<ViewModelProvider.Factory>() with singleton { ViewModelFactory(direct) }
+        bind<ViewModelProvider.Factory>(tag = "activity") with singleton { ViewModelFactory(direct) }
 
         importIfNotNull(kodeinModule)
         importIfNotNull(viewModelModule)

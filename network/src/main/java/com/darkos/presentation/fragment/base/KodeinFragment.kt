@@ -24,7 +24,7 @@ abstract class KodeinFragment : Fragment(), KodeinAware {
             }
         }
 
-        bind<ViewModelProvider.Factory>() with singleton { ViewModelFactory(direct) }
+        bind<ViewModelProvider.Factory>(tag = "fragment") with singleton { ViewModelFactory(direct) }
 
         importIfNotNull(viewModelModule)
         importIfNotNull(kodeinModule)
