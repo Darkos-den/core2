@@ -43,6 +43,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0"
     implementation 'androidx.core:core-ktx:1.3.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
-
-    implementation project(":mvu")
+    implementation "com.darkos:mvu-jvm:1.0.0"
 }

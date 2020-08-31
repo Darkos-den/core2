@@ -25,5 +25,6 @@ allprojects {
         jcenter()
         google()
         maven("https://jitpack.io")
+        maven("https://darkos.bintray.com/mvu")
     }
 }
