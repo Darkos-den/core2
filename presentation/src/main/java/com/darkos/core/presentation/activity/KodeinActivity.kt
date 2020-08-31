@@ -25,7 +25,7 @@ abstract class KodeinActivity : AppCompatActivity(), KodeinAware {
     override val kodein: Kodein by retainedKodein {
         extend(_parentKodein)
 
-        bind<ViewModelProvider.Factory>() with singleton { ViewModelFactory(direct) }
+        bind<ViewModelProvider.Factory>(tag = DI_TAG) with singleton { ViewModelFactory(direct) }
 
         importIfNotNull(kodeinModule)
         importIfNotNull(viewModelModule)
@@ -37,5 +37,9 @@ abstract class KodeinActivity : AppCompatActivity(), KodeinAware {
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         kodeinTrigger.trigger()
         super.onCreate(savedInstanceState)
+    }
+
+    companion object{
+        const val DI_TAG = "activity"
     }
 }

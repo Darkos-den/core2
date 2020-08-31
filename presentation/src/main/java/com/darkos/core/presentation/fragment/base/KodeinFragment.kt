@@ -24,7 +24,7 @@ abstract class KodeinFragment : Fragment(), KodeinAware {
             }
         }
 
-        bind<ViewModelProvider.Factory>() with singleton { ViewModelFactory(direct) }
+        bind<ViewModelProvider.Factory>(tag = DI_TAG, overrides = true) with singleton { ViewModelFactory(direct) }
 
         importIfNotNull(viewModelModule)
         importIfNotNull(kodeinModule)
@@ -38,5 +38,9 @@ abstract class KodeinFragment : Fragment(), KodeinAware {
     override fun onAttach(context: Context) {
         kodeinTrigger.trigger()
         super.onAttach(context)
+    }
+
+    companion object{
+        const val DI_TAG = "fragment"
     }
 }
