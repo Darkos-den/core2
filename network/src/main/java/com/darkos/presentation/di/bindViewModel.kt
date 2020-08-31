@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.darkos.presentation.activity.KodeinActivity
 import com.darkos.presentation.fragment.argumented.ArgumentedViewModel
+import com.darkos.presentation.fragment.base.KodeinFragment
 import com.darkos.presentation.viewModel.BaseViewModel
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -22,7 +24,7 @@ inline fun <reified VM, T> T.viewModel(): Lazy<VM>
               VM : ViewModel,
               VM : BaseViewModel {
     return lazy {
-        ViewModelProvider(context as AppCompatActivity, direct.instance(tag = "fragment"))
+        ViewModelProvider(context as AppCompatActivity, direct.instance(tag = KodeinFragment.DI_TAG))
             .get(VM::class.java).let {
                 return@let it
             }
@@ -35,7 +37,7 @@ inline fun <reified VM, T> T.viewModel(): Lazy<VM>
               VM : ViewModel,
               VM : BaseViewModel {
     return lazy {
-        ViewModelProvider(this as AppCompatActivity, direct.instance(tag = "activity"))
+        ViewModelProvider(this as AppCompatActivity, direct.instance(tag = KodeinActivity.DI_TAG))
             .get(VM::class.java).let {
                 return@let it
             }
@@ -48,7 +50,7 @@ inline fun <reified VM, T> T.argumentedViewModel(): Lazy<VM>
               VM : ViewModel,
               VM : ArgumentedViewModel<*> {
     return lazy {
-        ViewModelProvider(context as AppCompatActivity, direct.instance(tag = "fragment"))
+        ViewModelProvider(context as AppCompatActivity, direct.instance(tag = KodeinFragment.DI_TAG))
             .get(VM::class.java).let {
                 return@let it
             }
