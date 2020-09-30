@@ -47,20 +47,18 @@ class Program<T: MVUState>(
             state = state,
             message = msgQueue.first()
         ).let {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.Main.immediate).launch {
                 channel.send(it)
             }
         }
     }
 
-    private val job = CoroutineScope(Dispatchers.IO).launch {
+    private val job = CoroutineScope(Dispatchers.Main.immediate).launch {
         while (true) {
             channel.receive().let {
                 reducer.update(it.state, it.message)
             }.also {
-                withContext(Dispatchers.Main) {
-                    component.render(it.state)
-                }
+                component.render(it.state)
             }.also {
                 state = it.state
 
