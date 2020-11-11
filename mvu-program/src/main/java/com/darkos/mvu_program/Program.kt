@@ -51,13 +51,6 @@ class Program<T : MVUState>(
         }
     }
 
-    private fun accept(message: Message) {
-        msgQueue.addLast(message)
-        if (msgQueue.isNotEmpty()) {
-            processMessage()
-        }
-    }
-
     private val channel = Channel<StateMessageData<T>>()
 
     private var state: T = initialState
@@ -134,5 +127,12 @@ class Program<T : MVUState>(
     fun clear() {
         effectJobPool.clear()
         job.cancel()
+    }
+
+    fun accept(message: Message) {
+        msgQueue.addLast(message)
+        if (msgQueue.isNotEmpty()) {
+            processMessage()
+        }
     }
 }
