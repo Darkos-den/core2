@@ -24,7 +24,7 @@ inline fun <reified VM, T> T.viewModel(): Lazy<VM>
               VM : ViewModel,
               VM : BaseViewModel {
     return lazy {
-        ViewModelProvider(context as AppCompatActivity, direct.instance(tag = KodeinFragment.DI_TAG))
+        ViewModelProvider(this, direct.instance(tag = KodeinFragment.DI_TAG))
             .get(VM::class.java).let {
                 return@let it
             }
@@ -50,7 +50,7 @@ inline fun <reified VM, T> T.argumentedViewModel(): Lazy<VM>
               VM : ViewModel,
               VM : ArgumentedViewModel<*> {
     return lazy {
-        ViewModelProvider(context as AppCompatActivity, direct.instance(tag = KodeinFragment.DI_TAG))
+        ViewModelProvider(this, direct.instance(tag = KodeinFragment.DI_TAG))
             .get(VM::class.java).let {
                 return@let it
             }
