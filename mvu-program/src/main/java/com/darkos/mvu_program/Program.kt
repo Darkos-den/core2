@@ -1,42 +1,72 @@
 package com.darkos.mvu_program
 
-import android.util.Log
-import com.darkos.mvu.*
+import com.darkos.mvu.Component
+import com.darkos.mvu.EffectHandler
+import com.darkos.mvu.Reducer
 import com.darkos.mvu.models.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class Program<T: MVUState>(
+class Program<T : MVUState>(
     private val reducer: Reducer<T>,
     private val effectHandler: EffectHandler,
     private val component: Component<T>,
     initialState: T
 ) {
-    val msgQueue = ArrayDeque<Message>()
+    private val msgQueue = ArrayDeque<Message>()
 
-    fun accept(message: Message) {
+    private val effectJobPool = object {
+        private var jobs: List<Job> = emptyList()
+        private var scopedJobs: HashMap<Any, Job> = hashMapOf()
+
+        fun add(job: Job) {
+            jobs = jobs + job
+
+            job.invokeOnCompletion {
+                jobs = jobs - job
+            }
+        }
+
+        fun addScoped(key: Any, job: Job) {
+            scopedJobs[key]?.cancel()
+            scopedJobs[key] = job
+
+            job.invokeOnCompletion {
+                scopedJobs.remove(key)
+            }
+        }
+
+        fun clear() {
+            jobs.forEach {
+                it.cancel()
+            }
+            scopedJobs.forEach {
+                it.value.cancel()
+            }
+            jobs = emptyList()
+            scopedJobs.clear()
+        }
+    }
+
+    private fun accept(message: Message) {
         msgQueue.addLast(message)
-        if(msgQueue.isNotEmpty()){
+        if (msgQueue.isNotEmpty()) {
             processMessage()
         }
     }
 
-    val channel = Channel<StateMessageData<T>>()
+    private val channel = Channel<StateMessageData<T>>()
 
-    var state: T = initialState
-        set(value) {
-            field = value
-            Log.d("LOG[program]", "new state: ${value.javaClass.simpleName}")
-        }
+    private var state: T = initialState
 
     init {
         component.render(initialState)
     }
 
-    fun loop() {
+    private fun loop() {
         if (msgQueue.size > 0) {
             processMessage()
         }
@@ -82,6 +112,15 @@ class Program<T: MVUState>(
 
                         loop()
                     }
+                }.let { job ->
+                    it.effect.let {
+                        if (it is ScopedEffect) {
+                            effectJobPool.addScoped(it.scope, job)
+                        } else {
+                            effectJobPool.add(job)
+                        }
+                    }
+                    job.start()
                 }
             }
         }
@@ -93,6 +132,7 @@ class Program<T: MVUState>(
     }
 
     fun clear() {
+        effectJobPool.clear()
         job.cancel()
     }
 }
