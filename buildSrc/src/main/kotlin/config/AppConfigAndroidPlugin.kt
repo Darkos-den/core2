@@ -49,8 +49,8 @@ class AppConfigAndroidPlugin : Plugin<Project> {
     }
 
     companion object {
-        private const val compileVersion = 29
+        private const val compileVersion = 30
         private const val minVersion = 23
-        private const val targetVersion = 29
+        private const val targetVersion = 30
     }
 }

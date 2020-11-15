@@ -60,7 +60,7 @@ class Program<T : MVUState>(
     }
 
     private fun loop() {
-        if (msgQueue.size > 0) {
+        if (msgQueue.isNotEmpty()) {
             processMessage()
         }
     }
@@ -86,9 +86,9 @@ class Program<T : MVUState>(
                 state = it.state
 
                 //remove current message from queue
-                msgQueue.let {
-                    if (it.size > 0) {
-                        it.removeFirst()
+                msgQueue.let { messages ->
+                    if (messages.isNotEmpty()) {
+                        messages.removeFirst()
                     }
                 }
                 //and send a new msg to relay if any
@@ -113,20 +113,20 @@ class Program<T : MVUState>(
                             effectJobPool.add(job)
                         }
                     }
-                    job.start()
                 }
             }
         }
     }
 
     fun start() {
-        job.start()
         accept(ComponentInitialized)
     }
 
     fun clear() {
         effectJobPool.clear()
         job.cancel()
+        channel.cancel()
+        msgQueue.clear()
     }
 
     fun accept(message: Message) {
