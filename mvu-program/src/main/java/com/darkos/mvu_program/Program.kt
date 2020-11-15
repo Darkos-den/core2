@@ -4,11 +4,10 @@ import com.darkos.mvu.Component
 import com.darkos.mvu.EffectHandler
 import com.darkos.mvu.Reducer
 import com.darkos.mvu.models.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.darkos.mvu.models.flow.FlowEffect
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 
 class Program<T : MVUState>(
     private val reducer: Reducer<T>,
@@ -97,13 +96,18 @@ class Program<T : MVUState>(
                 it.effect !is None
             }?.let {
                 CoroutineScope(Dispatchers.IO).launch {
-                    effectHandler.call(it.effect).let {
-                        when (it) {
-                            is Idle -> Unit
-                            else -> msgQueue.addLast(it)
+                    when (val effect = it.effect) {
+                        is FlowEffect -> {
+                            effectHandler.call(effect).collect {
+                                processMessage(it)
+                                if (it.isFinal) {
+                                    cancel()
+                                }
+                            }
                         }
-
-                        loop()
+                        else -> {
+                            processMessage(effectHandler.call(effect))
+                        }
                     }
                 }.let { job ->
                     it.effect.let {
@@ -116,6 +120,15 @@ class Program<T : MVUState>(
                 }
             }
         }
+    }
+
+    private fun processMessage(message: Message) {
+        when (message) {
+            is Idle -> Unit
+            else -> msgQueue.addLast(message)
+        }
+
+        loop()
     }
 
     fun start() {
